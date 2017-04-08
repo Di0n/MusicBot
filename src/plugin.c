@@ -804,7 +804,9 @@ int ts3plugin_onTextMessageEvent(uint64 serverConnectionHandlerID, anyID targetM
 		removeSubstring(url, "[/URL]");
 		removeSpaces(url);
 
-		system(concatenateString("cmd /c start ", url));
+		LPCWSTR newUrl = charToLPCWSTR(url);
+		ShellExecute(NULL, L"open", newUrl, NULL, NULL, SW_SHOWNORMAL);
+		//system(concatenateString("cmd /c start ", url));
 		currentSong = url;
 	}
 	else if (stringStartsWith(message, "!song") == 1)
