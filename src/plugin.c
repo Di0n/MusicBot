@@ -1,5 +1,5 @@
 /*
- * TeamSpeak 3 demo plugin
+ * TeamSpeak 3 plugin for v 3.0.19.4
  *
  * Copyright (c) 2008-2016 TeamSpeak Systems GmbH
  */
@@ -96,7 +96,7 @@ const char* ts3plugin_author() {
 /* Plugin description */
 const char* ts3plugin_description() {
 	/* If you want to use wchar_t, see ts3plugin_name() on how to use */
-	return "Plugin for music bot";
+	return "Music bot plugin";
 }
 
 /* Set TeamSpeak 3 callback functions */
@@ -790,18 +790,37 @@ int ts3plugin_onServerErrorEvent(uint64 serverConnectionHandlerID, const char* e
 void ts3plugin_onServerStopEvent(uint64 serverConnectionHandlerID, const char* shutdownMessage) {
 }
 
-int ts3plugin_onTextMessageEvent(uint64 serverConnectionHandlerID, anyID targetMode, anyID toID, anyID fromID, const char* fromName, const char* fromUniqueIdentifier, const char* message, int ffIgnored) {
+char* currentSong = "";
+int ts3plugin_onTextMessageEvent(uint64 serverConnectionHandlerID, anyID targetMode, anyID toID, anyID fromID, const char* fromName, const char* fromUniqueIdentifier, const char* message, int ffIgnored) 
+{
 	printf("PLUGIN: onTextMessageEvent %llu %d %d %s %s %d\n", (long long unsigned int)serverConnectionHandlerID, targetMode, fromID, fromName, message, ffIgnored);
-	ts3Functions.logMessage(message, LogLevel_INFO, "Plugin", serverConnectionHandlerID);
+	ts3Functions.logMessage("Message received!", LogLevel_INFO, "Plugin", serverConnectionHandlerID);
 
-	if (stringStartsWith(message, "!add"))
+	if (stringStartsWith(message, "!play") == 1)
 	{
-		ts3Functions.logMessage("Called", LogLevel_INFO, "Plugin", serverConnectionHandlerID);
-		
-		const char* url;
-		system(concatenateString("cmd /c start ", url));
-	}
+		char* url = substring(message, 5, strlen(message)); // 5 = !play length
+		ts3Functions.logMessage(url, LogLevel_INFO, "Plugin", serverConnectionHandlerID);
+		removeSubstring(url, "[URL]");
+		removeSubstring(url, "[\\URL]");
+		removeSpaces(url);
 
+		system(concatenateString("cmd /c start ", url));
+		currentSong = url;
+	}
+	else if (stringStartsWith(message, "!song") == 1)
+	{
+		anyID myID;
+		if (ts3Functions.getClientID(serverConnectionHandlerID, &myID) != ERROR_ok) {
+			ts3Functions.logMessage("Error querying own client id", LogLevel_ERROR, "Plugin", serverConnectionHandlerID);
+			return 0;
+		}
+
+		if (fromID != myID)
+		{
+			ts3Functions.logMessage("!song called", LogLevel_INFO, "Plugin", serverConnectionHandlerID);
+			ts3Functions.requestSendPrivateTextMsg(serverConnectionHandlerID, concatenateString("The current song is: ", currentSong), fromID, NULL);
+		}
+	}
 	
 
 	/* Friend/Foe manager has ignored the message, so ignore here as well. */

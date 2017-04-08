@@ -6,7 +6,9 @@ static const bool False = 0;
 static const bool True = 1;
 #endif
 
-bool stringStartsWith(const char* pre, const char* str);
+int stringStartsWith(const char* pre, const char* str);
 char* concatenateString(const char* str1, const char* str2);
-char* substring(const char* str, const int index);
+char* substring(const char* str, const size_t startIndex, const size_t endIndex);
+void removeSpaces(char* str);
+void removeSubstring(char* s, const char* remove);
 #endif
