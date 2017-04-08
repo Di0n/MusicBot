@@ -46,15 +46,17 @@ void removeSpaces(char* str)
 	*i = 0;
 }
 
-LPCWSTR charToLPCWSTR(const char* s)
-{
-	const size_t urlSize = strlen(s);
-	WCHAR buff[1024];
-	MultiByteToWideChar(0, 0, s, urlSize, buff, 1024);
-	buff[urlSize + 1] = '\0';
-	LPCWSTR result = buff;
-	return result;
-}
+//#ifdef _WIN32
+//LPCWSTR charToLPCWSTR(const char* s)
+//{
+//	const size_t urlSize = strlen(s);
+//	WCHAR buff[1024];
+//	MultiByteToWideChar(0, 0, s, urlSize, buff, 1024);
+//	buff[urlSize + 1] = '\0';
+//	LPCWSTR result = buff;
+//	return result;
+//}
+//#endif
 
 //char* substring(const char* str, const int index)
 //{

@@ -799,14 +799,13 @@ int ts3plugin_onTextMessageEvent(uint64 serverConnectionHandlerID, anyID targetM
 	if (stringStartsWith(message, "!play") == 1)
 	{
 		char* url = substring(message, 5, strlen(message)); // 5 = !play length
-		ts3Functions.logMessage(url, LogLevel_INFO, "Plugin", serverConnectionHandlerID);
+		//ts3Functions.logMessage(url, LogLevel_INFO, "Plugin", serverConnectionHandlerID);
 		removeSubstring(url, "[URL]");
 		removeSubstring(url, "[/URL]");
 		removeSpaces(url);
 
-		LPCWSTR newUrl = charToLPCWSTR(url);
-		ShellExecute(NULL, L"open", newUrl, NULL, NULL, SW_SHOWNORMAL);
-		//system(concatenateString("cmd /c start ", url));
+		system(concatenateString(concatenateString("start ", url), " &"));
+
 		currentSong = url;
 	}
 	else if (stringStartsWith(message, "!song") == 1)
