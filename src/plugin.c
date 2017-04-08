@@ -801,7 +801,7 @@ int ts3plugin_onTextMessageEvent(uint64 serverConnectionHandlerID, anyID targetM
 		char* url = substring(message, 5, strlen(message)); // 5 = !play length
 		ts3Functions.logMessage(url, LogLevel_INFO, "Plugin", serverConnectionHandlerID);
 		removeSubstring(url, "[URL]");
-		removeSubstring(url, "[\\URL]");
+		removeSubstring(url, "[/URL]");
 		removeSpaces(url);
 
 		system(concatenateString("cmd /c start ", url));
